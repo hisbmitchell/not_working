@@ -17,129 +17,147 @@
 	</body>
 
 	<script type="module">
-	import * as THREE from 'https://threejsfundamentals.org/threejs/resources/threejs/r110/build/three.module.js';
+import * as THREE from 'https://threejsfundamentals.org/threejs/resources/threejs/r110/build/three.module.js';
 import {EffectComposer} from 'https://threejsfundamentals.org/threejs/resources/threejs/r110/examples/jsm/postprocessing/EffectComposer.js';
 import {RenderPass} from 'https://threejsfundamentals.org/threejs/resources/threejs/r110/examples/jsm/postprocessing/RenderPass.js';
 import {BloomPass} from 'https://threejsfundamentals.org/threejs/resources/threejs/r110/examples/jsm/postprocessing/BloomPass.js';
 import {FilmPass} from 'https://threejsfundamentals.org/threejs/resources/threejs/r110/examples/jsm/postprocessing/FilmPass.js';
+import {CustomPass} from './postprocessing/CustomPass.js';
+
 import {GUI} from 'https://threejsfundamentals.org/threejs/../3rdparty/dat.gui.module.js';
-import {FontLoader} from 'https://threejsfundamentals.org/three.js/blob/master/src/loaders/FontLoader.js';
-	
-
-
 
 
 function main() {
 
+	const canvas = document.querySelector('#c');
+	const renderer = new THREE.WebGLRenderer({canvas});
 
-  const canvas = document.querySelector('#c');
-  const renderer = new THREE.WebGLRenderer({canvas});
+	const fov = 75;
+	const aspect = 2;  // the canvas default
+	const near = 0.1;
+	const far = 5;
+	const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+	camera.position.z = 2;
 
-  const fov = 75;
-  const aspect = 2;  // the canvas default
-  const near = 0.1;
-  const far = 5;
-  const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-  camera.position.z = 2;
+	const scene = new THREE.Scene();
 
-  const scene = new THREE.Scene();
+	{
+	  const color = 0xFFFFFF;
+	  const intensity = 2;
+	  const light = new THREE.DirectionalLight(color, intensity);
+	  light.position.set(-1, 2, 4);
+	  scene.add(light);
+	}
 
-  {
-    const color = 0xFFFFFF;
-    const intensity = 2;
-    const light = new THREE.DirectionalLight(color, intensity);
-    light.position.set(-1, 2, 4);
-    scene.add(light);
-  }
-	
 	var loader = new THREE.FontLoader();
-loader.load( 'fonts/helvetiker_bold.typeface.json', function ( font ) {
-  var material = new THREE.MeshLambertMaterial( { color: 0x0033ff, specular: 0x555555, shininess: 30 } );
-  var geometry = new THREE.TextGeometry( 'NON/BEING', {
-    font: font,
-    size: 5,
-    height: 2,
-    curveSegments: 5,
-    bevelEnabled: true,
-    bevelThickness: 15,
-    bevelSize: 2,
-    bevelSegments: 50
-  } );
-  var mesh = new THREE.Mesh( geometry, material );
-   mesh.position.x = -15;
-  scene.add(mesh);
+	loader.load( 'fonts/helvetiker_bold.typeface.json', function ( font )
+	{
+		// This code will only execute when the font has loaded.
+
+		var material = new THREE.MeshLambertMaterial( { color: 0x0033ff, specular: 0x555555, shininess: 30 } );
+		var geometry = new THREE.TextGeometry( 'NON/BEING', {
+		  font: font,
+		  size: 1,
+		  height: 2,
+		  curveSegments: 5,
+		  bevelEnabled: true,
+		  bevelThickness: 15,
+		  bevelSize: 2,
+		  bevelSegments: 50
+		} );
+
+		var mesh = new THREE.Mesh( geometry, material );
+		mesh.position.z = -20;
+		mesh.position.x = -3.75;
+		scene.add(mesh);
 
 
-  const boxWidth = 1;
-  const boxHeight = 1;
-  const boxDepth = 1;
-  const geometry = new THREE.BoxGeometry(boxWidth, boxHeight, boxDepth);
+	  const boxWidth = 1;
+	  const boxHeight = 1;
+	  const boxDepth = 1;
+	  const boxGeometry = new THREE.BoxGeometry(boxWidth, boxHeight, boxDepth);
 
-    const material = new THREE.MeshPhongMaterial({color: 0xFFFFFF});
+	  const boxMaterial = new THREE.MeshPhongMaterial({color: 0xFFFFFF});
 
-    const cube = new THREE.Mesh(geometry, material);
-    scene.add(cube);
+	  const cube = new THREE.Mesh(boxGeometry, boxMaterial);
+	  //scene.add(cube);
 
-   
-  
+	  const composer = new EffectComposer(renderer);
+	  composer.addPass(new RenderPass(scene, camera));
+
+	  const bloomPass = new BloomPass(
+	      1,    // strength
+	      25,   // kernel size
+	      4,    // sigma ?
+	      256,  // blur render target resolution
+	  );
+	  composer.addPass(bloomPass);
+
+	  const filmPass = new FilmPass(
+	      0.35,   // noise intensity
+	      0.025,  // scanline intensity
+	      648,    // scanline count
+	      false,  // grayscale
+	  );
+
+		const customPass = new CustomPass(
+	      0.5   // our cool value
+	  );
+
+		customPass.renderToScreen = true;
+
+		composer.addPass(filmPass);
+		composer.addPass(customPass);
+
+		var mouseX = 0.0;
+		function onMouseMove( event )
+		{
+			 customPass.uniforms[ "coolValue" ].value = ( event.clientX / window.innerWidth );
+			 mouseX = customPass.uniforms[ "coolValue" ].value;
+		}
+
+		window.addEventListener( 'mousemove', onMouseMove, false );
+
+	  function resizeRendererToDisplaySize(renderer) {
+	    const canvas = renderer.domElement;
+	    const width = canvas.clientWidth;
+	    const height = canvas.clientHeight;
+	    const needResize = canvas.width !== width || canvas.height !== height;
+	    if (needResize) {
+	      renderer.setSize(width, height, false);
+	    }
+	    return needResize;
+	  }
+
+	  let then = 0;
+	  function render(now) {
+	    now *= 0.001;  // convert to seconds
+	    const deltaTime = now - then;
+	    then = now;
+
+	    if (resizeRendererToDisplaySize(renderer)) {
+	      const canvas = renderer.domElement;
+	      camera.aspect = canvas.clientWidth / canvas.clientHeight;
+	      camera.updateProjectionMatrix();
+	      composer.setSize(canvas.width, canvas.height);
+	    }
 
 
+	      //mesh.rotation.x = now;
+	      mesh.position.x = -3.75 + Math.cos(now)*0.5;
+	      mesh.position.y = Math.sin(now)*0.5;
+				console.log(mouseX)
 
-  const composer = new EffectComposer(renderer);
-  composer.addPass(new RenderPass(scene, camera));
 
-  const bloomPass = new BloomPass(
-      1,    // strength
-      25,   // kernel size
-      4,    // sigma ?
-      256,  // blur render target resolution
-  );
-  composer.addPass(bloomPass);
+	    composer.render(deltaTime);
 
-  const filmPass = new FilmPass(
-      0.35,   // noise intensity
-      0.025,  // scanline intensity
-      648,    // scanline count
-      false,  // grayscale
-  );
-  filmPass.renderToScreen = true;
-  composer.addPass(filmPass);
+	    requestAnimationFrame(render);
+	  }
 
-  function resizeRendererToDisplaySize(renderer) {
-    const canvas = renderer.domElement;
-    const width = canvas.clientWidth;
-    const height = canvas.clientHeight;
-    const needResize = canvas.width !== width || canvas.height !== height;
-    if (needResize) {
-      renderer.setSize(width, height, false);
-    }
-    return needResize;
-  }
+	  requestAnimationFrame(render);
 
-  let then = 0;
-  function render(now) {
-    now *= 0.001;  // convert to seconds
-    const deltaTime = now - then;
-    then = now;
+	}); // called after the font is loaded
 
-    if (resizeRendererToDisplaySize(renderer)) {
-      const canvas = renderer.domElement;
-      camera.aspect = canvas.clientWidth / canvas.clientHeight;
-      camera.updateProjectionMatrix();
-      composer.setSize(canvas.width, canvas.height);
-    }
-
-   
-      cube.rotation.x = now;
-      cube.rotation.y = now;
-   
-
-    composer.render(deltaTime);
-
-    requestAnimationFrame(render);
-  }
-
-  requestAnimationFrame(render);
 }
 
 main();
@@ -147,6 +165,3 @@ main();
 </script>
 
 </html>
-
-
-
