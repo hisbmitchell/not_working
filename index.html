@@ -53,11 +53,16 @@ function main() {
 	loader.load( 'fonts/helvetiker_bold.typeface.json', function ( font )
 	{
 		// This code will only execute when the font has loaded.
+		var fontSize = .5;
+
+		if (window.innerWidth >= 800) {
+				fontSize = 2.;
+		}
 
 		var material = new THREE.MeshLambertMaterial( { color: 0x0033ff, specular: 0x555555, shininess: 30 } );
 		var geometry = new THREE.TextGeometry( 'NON/BEING', {
 		  font: font,
-		  size: .5 ,
+		  size: fontSize ,
 		  height: 2,
 		  curveSegments: 5,
 		  bevelEnabled: true,
@@ -135,14 +140,14 @@ function main() {
 		window.addEventListener( 'mousemove', onMouseMove, false );
 
 		var mobileMouseX = 0.0;
-		function onTouchStart ( event )
+		function onTouchMove( event )
 		{
 			customPass.uniforms[ "coolValue" ].value = ( event.clientX / window.innerWidth );
 			mobileMouseX = customPass.uniforms[ "coolValue" ].value;
 
 		}
 
-		window.addEventListener( 'mobilemousemove', onTouchStart, false );
+		window.addEventListener("touchmove", onTouchMove, false);
 
 	  function resizeRendererToDisplaySize(renderer) {
 	    const canvas = renderer.domElement;
@@ -172,7 +177,8 @@ function main() {
 	      //mesh.rotation.x = now;
 	      //mesh.position.x = -3.75 + Math.cos(now)*0.5;
 	      //mesh.position.y = Math.sin(now)*0.5;
-				console.log(mouseX)
+				console.log(mouseX);
+				console.log("MOBILE",mobileMouseX);
 
 
 	    composer.render(deltaTime);
