@@ -57,7 +57,7 @@ function main() {
 		var material = new THREE.MeshLambertMaterial( { color: 0x0033ff, specular: 0x555555, shininess: 30 } );
 		var geometry = new THREE.TextGeometry( 'NON/BEING', {
 		  font: font,
-		  size: 1,
+		  size: .5 ,
 		  height: 2,
 		  curveSegments: 5,
 		  bevelEnabled: true,
@@ -67,8 +67,24 @@ function main() {
 		} );
 
 		var mesh = new THREE.Mesh( geometry, material );
-		mesh.position.z = -20;
-		mesh.position.x = -3.75;
+		mesh.position.z = - 20;
+
+		var box = new THREE.Box3().setFromObject( mesh );
+		console.log( box.min, box.max, box.getSize() );
+
+		mesh.position.x = -2. ;
+
+		console.log("MESH-WIDTH" ,  );
+
+		// TextGeometry.computeBoundingBox();
+		// const center = mesh.boundingBox.getCenter(new Vector3());
+
+		//THREEx.GeometryUtils.center(geometry);
+
+		console.log("X:" , mesh.position.x);
+		console.log("Y:" , mesh.position.y);
+
+		//mesh.position.x = -3.75;
 		scene.add(mesh);
 
 
@@ -118,6 +134,16 @@ function main() {
 
 		window.addEventListener( 'mousemove', onMouseMove, false );
 
+		var mobileMouseX = 0.0;
+		function onTouchStart ( event )
+		{
+			customPass.uniforms[ "coolValue" ].value = ( event.clientX / window.innerWidth );
+			mobileMouseX = customPass.uniforms[ "coolValue" ].value;
+
+		}
+
+		window.addEventListener( 'mobilemousemove', onTouchStart, false );
+
 	  function resizeRendererToDisplaySize(renderer) {
 	    const canvas = renderer.domElement;
 	    const width = canvas.clientWidth;
@@ -144,8 +170,8 @@ function main() {
 
 
 	      //mesh.rotation.x = now;
-	      mesh.position.x = -3.75 + Math.cos(now)*0.5;
-	      mesh.position.y = Math.sin(now)*0.5;
+	      //mesh.position.x = -3.75 + Math.cos(now)*0.5;
+	      //mesh.position.y = Math.sin(now)*0.5;
 				console.log(mouseX)
 
 
