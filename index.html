@@ -17,6 +17,8 @@
 	<canvas id="c"></canvas>
 
 
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+	<script src="js/scripts.js"></script>
 
 	</body>
 
@@ -161,30 +163,30 @@ function main() {
 		var normDist
 
 		window.addEventListener('touchstart', function(e) {
-			var touchPoint = e.changedTouches[0] //reference first touched touchPoint
-			startX = parseInt(touchPoint.clientX)
-			console.log('Status: touchstart <br> ClientX: ' + startX + 'px')
-			e.preventDefault()
-			e.stopPropagation()
-		}, false)
+			var touchPoint = e.changedTouches[0]; //reference first touched touchPoint
+			startX = parseInt(touchPoint.clientX);
+			console.log('Status: touchstart <br> ClientX: ' + startX + 'px');
+			e.preventDefault();
+			e.stopPropagation();
+		}, false);
 
 		window.addEventListener('touchmove', function(e) {
 			var touchPoint = e.changedTouches[0] //reference first touch touchPoint
-			var dist = parseInt(touchPoint.clientX) - startX
+			var dist = parseInt(touchPoint.clientX) - startX;
 			normDist = dist / window.innerWidth;
-			console.log( 'Status: touchmove <br> Horizontal distance traveled:' + normDist + 'px')
+			console.log( 'Status: touchmove <br> Horizontal distance traveled:' + normDist + 'px');
 
-			e.preventDefault()
-			e.stopPropagation()
-		}, false)
+			e.preventDefault();
+			e.stopPropagation();
+		}, false);
 
 		window.addEventListener('touchend', function(e) {
-			var touchPoint = e.changedTouches [0] //reference first touchPoint
-			console.log('Status: touchend <br> Resting x coordiante: ' + touchPoint.clientX + 'px')
-			e.preventDefault()
-			e.stopPropagation()
+			var touchPoint = e.changedTouches [0] ;//reference first touchPoint
+			console.log('Status: touchend <br> Resting x coordiante: ' + touchPoint.clientX + 'px');
+			e.preventDefault();
+			e.stopPropagation();
 
-		}, false)
+		}, false);
 
 
 		// var mobileMouseX = 0.0;
@@ -230,7 +232,7 @@ function main() {
 
 				plane.position.z = -mouseY -1.5;
 				plane.position.z = -normDist - 2;
-				 customPass.uniforms[ "coolValue" ].value = (normDist + .5)  * 3
+				 customPass.uniforms[ "coolValue" ].value = (normDist + .5)  * 3;
 
 				console.log (normDist);
 
