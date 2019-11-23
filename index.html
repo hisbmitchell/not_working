@@ -64,8 +64,8 @@ function main() {
 
 	{
 		// This code will only execute when the font has loaded.
-		var fontSize = .5;
-		var textX = -1.95;
+		var fontSize = .4;
+		var textX = -1.55;
 
 		if (window.innerWidth >= 800) {
 				fontSize = 1.;
@@ -238,8 +238,8 @@ function main() {
 				//console.log("MOBILE",mobileMouseX);
 
 				plane.position.z = -mouseY -1.5;
-				plane.position.z = -normDist - 2;
-				 customPass.uniforms[ "coolValue" ].value = (normDist + .5)  * 3;
+				plane.position.z = -normDist - 3;
+				 customPass.uniforms[ "coolValue" ].value = (normDist + .5) *-1.5 ;
 
 				console.log (normDist);
 
