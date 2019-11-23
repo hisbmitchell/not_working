@@ -62,8 +62,8 @@ function main() {
 
 	{
 		// This code will only execute when the font has loaded.
-		var fontSize = .3;
-		var textX = -1.15;
+		var fontSize = .5;
+		var textX = -1.95;
 
 		if (window.innerWidth >= 800) {
 				fontSize = 1.;
@@ -170,7 +170,7 @@ function main() {
 		window.addEventListener('touchmove', function(e) {
 			var touchPoint = e.changedTouches[0] //reference first touch touchPoint
 			var dist = parseInt(touchPoint.clientX) - startX
-			var normDist = dist / window.innerWidth;
+			normDist = dist / window.innerWidth;
 			console.log( 'Status: touchmove <br> Horizontal distance traveled:' + normDist + 'px')
 
 			e.preventDefault()
@@ -226,9 +226,10 @@ function main() {
 				//console.log("MOBILE",mobileMouseX);
 
 				plane.position.z = -mouseY -1.5;
-				plane.position.z = -normDist;
+				plane.position.z = -normDist - 2;
+				 customPass.uniforms[ "coolValue" ].value = (normDist + .5)  * 3
 
-				console.log (normDist)
+				console.log (normDist);
 
 	    composer.render(deltaTime);
 
