@@ -156,6 +156,7 @@ function main() {
 			 mouseY = customPass.uniforms[ "coolValue" ].value + 1. ;
 		}
 
+		window.addEventListener('touchmove', event => event.preventDefault());
 		window.addEventListener( 'mousemove', onMouseMove, false );
 
 		var startX = 0
