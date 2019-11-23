@@ -158,6 +158,7 @@ function main() {
 
 		var startX = 0
 		var dist = 0
+		var normDist
 
 		window.addEventListener('touchstart', function(e) {
 			var touchPoint = e.changedTouches[0] //reference first touched touchPoint
@@ -169,7 +170,9 @@ function main() {
 		window.addEventListener('touchmove', function(e) {
 			var touchPoint = e.changedTouches[0] //reference first touch touchPoint
 			var dist = parseInt(touchPoint.clientX) - startX
-			console.log( 'Status: touchmove <br> Horizontal distance traveled:' + dist + 'px')
+			var normDist = dist / window.innerWidth;
+			console.log( 'Status: touchmove <br> Horizontal distance traveled:' + normDist + 'px')
+
 			e.preventDefault()
 		}, false)
 
@@ -222,7 +225,8 @@ function main() {
 				console.log(mouseY);
 				//console.log("MOBILE",mobileMouseX);
 
-					plane.position.z = -mouseY -1.5;
+				plane.position.z = -mouseY -1.5;
+				plane.position.z = -normDist -1.5;
 
 
 	    composer.render(deltaTime);
