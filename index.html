@@ -8,11 +8,15 @@
 
     <link rel="stylesheet" href="styles.css">
 
+
+
 	</head>
 
 <body>
 
 	<canvas id="c"></canvas>
+
+
 
 	</body>
 
@@ -158,20 +162,20 @@ function main() {
 		window.addEventListener('touchstart', function(e) {
 			var touchPoint = e.changedTouches[0] //reference first touched touchPoint
 			startX = parseInt(touchPoint.clientX)
-			statusdiv.innerHTML = 'Status: touchstart <br> ClientX: ' + startX + 'px'
+			console.log('Status: touchstart <br> ClientX: ' + startX + 'px')
 			e.preventDefault()
 		}, false)
 
 		window.addEventListener('touchmove', function(e) {
 			var touchPoint = e.changedTouches[0] //reference first touch touchPoint
 			var dist = parseInt(touchPoint.clientX) - startX
-			statusdiv.innerHTML = 'Status: touchmove <br> Horizontal distance traveled:' + dist + 'px'
+			console.log( 'Status: touchmove <br> Horizontal distance traveled:' + dist + 'px')
 			e.preventDefault()
 		}, false)
 
 		window.addEventListener('touchend', function(e) {
 			var touchPoint = e.changedTouches [0] //reference first touchPoint
-			statusdiv.innerHTML = 'Status: touchend <br> Resting x coordiante: ' + touchPoint.clientX + 'px'
+			console.log('Status: touchend <br> Resting x coordiante: ' + touchPoint.clientX + 'px')
 			e.preventDefault()
 
 		}, false)
