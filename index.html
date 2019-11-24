@@ -67,6 +67,12 @@ function main() {
 		var fontSize = .4;
 		var textX = -1.55;
 
+		if (window.innerWidth <= 411) {
+				fontSize = .33;
+				textX = -1.32;
+				//textPosition = .5;
+		}
+
 		if (window.innerWidth >= 800) {
 				fontSize = 1.;
 				textX = -4;
@@ -92,9 +98,34 @@ function main() {
 		mesh.position.z = - 19;
 
 		var box = new THREE.Box3().setFromObject( mesh );
-		console.log( box.min, box.max, box.getSize() );
+		//console.log( box.min, box.max, box.getSize() );
 
 		mesh.position.x = textX ;
+
+		const followObjMat = new THREE.MeshBasicMaterial({ color: 0xeb4034});
+		const followObjGeo = new THREE.PlaneGeometry(1,1,.5);
+
+		//
+		// var followBox = new THREE.Box3().setFromObject( followObjMat );
+		// followBox.center( followObjMat.position ); // this re-sets the mesh position
+		// followObjMat.position.multiplyScalar( - 1 );
+
+
+
+		const followObj = new THREE.Mesh(followObjGeo, followObjMat);
+
+		followObj.position.z = -2;
+
+
+
+		var followBox2 = followObjGeo.computeBoundingBox();
+		//var followbox = new THREE.BoxHelper( followObj, 0xffff00 );
+		//scene.add( followbox );
+		//scene.add( followBox2 );
+
+	  scene.add(followObj);
+
+
 
 
 		// TextGeometry.computeBoundingBox();
@@ -102,14 +133,14 @@ function main() {
 
 		//THREEx.GeometryUtils.center(geometry);
 
-		console.log("X:" , mesh.position.x);
-		console.log("Y:" , mesh.position.y);
+		//console.log("X:" , mesh.position.x);
+		//console.log("Y:" , mesh.position.y);
 
 		//mesh.position.x = -3.75;
 		scene.add(mesh);
 
 
-	  const planeWidth = 15;
+	  const planeWidth = 18;
 	  const planeHeight = 10;
 	  const planeDepth = 1;
 	  const planeGeometry = new THREE.PlaneGeometry(planeWidth, planeHeight, planeDepth);
@@ -117,6 +148,7 @@ function main() {
 	  const planeMaterial = new THREE.MeshBasicMaterial( { map: imageTexture } )
 
 	  const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+		plane.position.z = -3;
 
 	  scene.add(plane);
 
@@ -165,13 +197,15 @@ function main() {
 
 		window.addEventListener( 'mousemove', onMouseMove, false );
 
-		var startX = 0
-		var dist = 0
-		var normDist
+		var startY = 0;
+		var dist = 0;
+		var normDist;
+		var currentTouchPositionX;
+		var currentTouchPositionY;
 
 		window.addEventListener('touchstart', function(e) {
 			var touchPoint = e.changedTouches[0]; //reference first touched touchPoint
-			startX = parseInt(touchPoint.clientX);
+			startY = parseInt(touchPoint.clientY);
 			console.log('Status: touchstart <br> ClientX: ' + startX + 'px');
 			e.preventDefault();
 			e.stopPropagation();
@@ -179,8 +213,10 @@ function main() {
 
 		window.addEventListener('touchmove', function(e) {
 			var touchPoint = e.changedTouches[0] //reference first touch touchPoint
-			var dist = parseInt(touchPoint.clientX) - startX;
-			normDist = dist / window.innerWidth;
+			var dist = parseInt(touchPoint.clientY) - startY;
+			normDist = dist / window.innerWidth *2;
+			currentTouchPositionX = touchPoint.clientX;
+			currentTouchPositionY = touchPoint.clientY;
 			console.log( 'Status: touchmove <br> Horizontal distance traveled:' + normDist + 'px');
 
 			e.preventDefault();
@@ -238,10 +274,24 @@ function main() {
 				//console.log("MOBILE",mobileMouseX);
 
 				plane.position.z = -mouseY -1.5;
-				plane.position.z = -normDist - 3;
-				 customPass.uniforms[ "coolValue" ].value = (normDist + .5) *-1.5 ;
 
-				console.log (normDist);
+				followObj.position.x = currentTouchPositionX/window.innerWidth *4 -2;
+				followObj.position.y = currentTouchPositionY/window.innerHeight *-6 +3;
+
+				console.log("OBJPOS X:" + followObj.position.x , "OBJPOS Y:" +
+				followObj.position.y);
+
+				if (window.innerWidth <=800) {
+				plane.position.z = -normDist - 3;
+				customPass.uniforms[ "coolValue" ].value = -2;
+				customPass.uniforms[ "coolValue" ].value += (normDist * -3)  ;
+
+				}
+				//console.log (normDist);
+				console.log("CURRENT TOUCH POSITION: X " + currentTouchPositionX + " Y: " + currentTouchPositionY );
+
+				//followbox.update();
+
 
 	    composer.render(deltaTime);
 
