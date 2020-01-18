@@ -8,6 +8,11 @@
 	touch-action: none;
 } */
 
+html, body {
+	
+	overflow-y: scroll;
+	
+} 
 
 #c {
 
