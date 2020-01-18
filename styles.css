@@ -1,12 +1,11 @@
-/* html, body {
+ html, body {
 	margin: 0;
 	height: 100%;
 	width: 100%;
-	
   	padding: 0;
 	position: fixed;
 	touch-action: none;
-} */
+}
 
  
 
@@ -29,7 +28,7 @@ div {
 
 p {
     font-family: 'Roboto Mono', monospace;
-    color: blue;
+    color: red;
     text-align: center;
     padding: 5%;    
     margin-left: auto;
