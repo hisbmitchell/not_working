@@ -28,3 +28,18 @@ p {
     margin-right: auto;
     max-width: 100%;
 }
+
+ul {
+    font-family: 'Roboto Mono', monospace;
+    color: white;
+    text-align: left;
+    padding: 5%;    
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 35%;
+}
+
+li {
+    
+    padding: 1%;
+}
